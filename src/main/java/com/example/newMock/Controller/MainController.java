@@ -1,5 +1,6 @@
 package com.example.newMock.Controller;
 
+import com.example.newMock.Kafka.KafkaProducerService;
 import com.example.newMock.Model.RequestDTO;
 import com.example.newMock.Model.ResponseDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,6 +21,7 @@ import java.util.Random;
 public class MainController {
 
     private Logger log = LoggerFactory.getLogger(MainController.class);
+    private KafkaProducerService kafkaProducerService = new KafkaProducerService();
 
     ObjectMapper mapper = new ObjectMapper();
 
@@ -61,6 +63,11 @@ public class MainController {
 
             log.error("********** RequestDTO **********" + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(requestDTO));
             log.error("********** ResponseDTO **********" + mapper.writerWithDefaultPrettyPrinter().writeValueAsString(responseDTO));
+
+            String topic = "user1";
+            String messageValue = mapper.writeValueAsString(responseDTO);
+
+            kafkaProducerService.sendMessage(topic, null, messageValue);
 
             return responseDTO;
 
